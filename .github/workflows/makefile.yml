@@ -1,0 +1,39 @@
+name: openwrt CI
+on:
+  push:
+    branches: 
+      - master
+  # schedule:
+  #   - cron: 0 20 * * *
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: Initialization Environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo apt-get update
+          sudo apt-get -y --no-install-recommends install build-essential
+      - name: Build Firmware
+        run: |
+          pwd
+          ls -ls .
+          echo "==========Before============="
+          echo "Space usage:"
+          echo "======================="
+          df -h
+          echo "======================="
+          du -h ./ --max-depth=1
+          ./build.sh master
+          echo "=========After=============="
+          echo "Space usage:"
+          echo "======================="
+          df -h
+          echo "======================="       
