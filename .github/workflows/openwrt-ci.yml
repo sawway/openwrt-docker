@@ -22,18 +22,25 @@ jobs:
           sudo apt-get update
           sudo apt-get -y --no-install-recommends install build-essential
       - name: Build Firmware
+        env:
+          NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+          USER_PASS: ${{ secrets.USER_PASS }}
         run: |
           pwd
           ls -ls .
+          curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
           echo "==========Before============="
           echo "Space usage:"
           echo "======================="
           df -h
           echo "======================="
           du -h ./ --max-depth=1
-          ./build.sh master
+          ./build.sh master > build.log 2>&1
           echo "=========After=============="
           echo "Space usage:"
           echo "======================="
           df -h
-          echo "======================="       
+          echo "======================="
+          echo "++++++++++sleep 600+++++++++++"
+          sleep 600
+          
